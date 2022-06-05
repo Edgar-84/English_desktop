@@ -12,7 +12,7 @@ class BaseModel(Model):
 
 
 class User(BaseModel):
-    name = CharField()
+    name = CharField(unique=True)
     password = CharField()
 
     class Meta:
