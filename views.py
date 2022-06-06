@@ -43,7 +43,6 @@ def verify_name(username: str) -> bool:
             return False
 
 
-
 def login_new_person(name: str, password: str) -> bool:
     """Create new user"""
 
@@ -52,4 +51,38 @@ def login_new_person(name: str, password: str) -> bool:
         return False
     with db:
         new_user = User(name=name, password=convert_password(password)).save()
-    print(f"Create new user -- {name}")
+    print(f"Create new user -> {name}")
+    return True
+
+
+def check_listwords(name_list: str, user_id: str) -> bool:
+    """Сhecking the location of the list in the database"""
+
+    with db:
+        names = ListWord.select().where(ListWord.user_id == user_id)
+        if name_list in [nameList.name for nameList in names]:
+            return True
+        return False
+
+
+def check_user_id(user_id: str) -> bool:
+    """Checking user_id in table Users"""
+
+    with db:
+        users = User.select()
+        if user_id in [str(user.id) for user in users]:
+            return True
+        return False
+
+
+def create_list_word(user_id: str, name: str) -> bool:
+    """Create ListWord"""
+    if check_user_id(user_id) == False:
+        print("Invalid user_id")
+        return False
+    else:
+        with db:
+            new_list = ListWord(user_id=user_id, name=name).save()
+        print(f"Create new ListWord -> {name}")
+        return True
+
