@@ -7,6 +7,7 @@ from models import *
 load_dotenv()
 PASSWORD_SALT = os.getenv("PASSWORD_SALT")
 
+
 def convert_password(password: str) -> str:
     """Create hash password with PASSWORD_SALT"""
 
@@ -21,7 +22,7 @@ def verify_password(username: str, password: str) -> bool:
         print("There is no such user")
         return False
     else:
-        password_hash = hashlib.sha256((password + PASSWORD_SALT).encode())\
+        password_hash = hashlib.sha256((password + PASSWORD_SALT).encode()) \
             .hexdigest().lower()
 
         with db:
@@ -55,7 +56,7 @@ def login_new_person(name: str, password: str) -> bool:
     return True
 
 
-def check_listwords(name_list: str, user_id: str) -> bool:
+def check_listwords(user_id: str, name_list: str) -> bool:
     """Сhecking the location of the list in the database"""
 
     with db:
@@ -77,8 +78,13 @@ def check_user_id(user_id: str) -> bool:
 
 def create_list_word(user_id: str, name: str) -> bool:
     """Create ListWord"""
+
     if check_user_id(user_id) == False:
         print("Invalid user_id")
+        return False
+
+    if check_listwords(user_id, name):
+        print("A list with that name already exists")
         return False
     else:
         with db:
@@ -86,3 +92,20 @@ def create_list_word(user_id: str, name: str) -> bool:
         print(f"Create new ListWord -> {name}")
         return True
 
+
+def delete_list_word(user_id: str, name: str) -> bool:
+    """Delete listword from database"""
+
+    if check_user_id(user_id) == False:
+        print("Invalid user_id")
+        return False
+    if check_listwords(user_id, name) == False:
+        print("There is no such list")
+        return False
+    else:
+
+        with db:
+            delete_list = ListWord.delete().where(ListWord.user_id == user_id, \
+                                                  ListWord.name == name).execute()
+        print(f"List -> {name} is deleted")
+        return True
