@@ -103,9 +103,54 @@ def delete_list_word(user_id: str, name: str) -> bool:
         print("There is no such list")
         return False
     else:
-
         with db:
             delete_list = ListWord.delete().where(ListWord.user_id == user_id, \
                                                   ListWord.name == name).execute()
         print(f"List -> {name} is deleted")
         return True
+
+
+def convert_listword_id(user_id: str, name: str) -> str:
+    """Converting the name of the list to its ID,
+     provided that it exists"""
+
+    with db:
+        record = (ListWord.select().where((ListWord.user_id == user_id)
+                                         & (ListWord.name == name)))
+
+        return str(*[our_record.id for our_record in record])
+
+
+def checking_word(user_id: str, list_id: str, word: str) -> bool:
+    """Сhecking the presence of a word in the list"""
+
+    with db:
+        our_word = (Word.select().where((Word.user_id == user_id) &
+                                        (Word.list_id == list_id) &
+                                        (Word.word == word)))
+        if [this_word.word for this_word in our_word]:
+            return True
+        return False
+
+
+def create_word(user_id: str, name_list: str, word: str, translate: str) -> bool:
+    """Create new word and translate in ListWord"""
+
+    if check_user_id(user_id) == False:
+        print("Invalid user_id")
+        return False
+
+    if check_listwords(user_id, name_list) == False:
+        print("There is no such list")
+        return False
+
+    list_id = convert_listword_id(user_id, name_list)
+    if checking_word(user_id, list_id, word):
+        print("This word is already on the list")
+        return False
+
+    with db:
+        save_word = Word(user_id=user_id, list_id=list_id, word=word, translate=translate).save()
+    print(f"""Create word -> {word}\ntranslate -> {translate}""")
+    return True
+
