@@ -14,9 +14,9 @@ def convert_password(password: str) -> str:
     return hashlib.sha256((password + PASSWORD_SALT).encode()).hexdigest().lower()
 
 
-def verify_password(username: str, password: str) -> bool:
+def verify_password(username: str, password: str) -> bool or str:
     """Verification user, checking username and
-     password with hasd in database"""
+     password with hash in database"""
 
     if verify_name(username=username) == False:
         print("There is no such user")
@@ -28,9 +28,10 @@ def verify_password(username: str, password: str) -> bool:
         with db:
             stored_password_hash = User.get(User.name == username)
         if password_hash == stored_password_hash.password:
-            return True
-        print("Invalid password")
-        return False
+            return stored_password_hash.id
+        else:
+            print("Invalid password")
+            return False
 
 
 def verify_name(username: str) -> bool:
@@ -104,7 +105,7 @@ def delete_list_word(user_id: str, name: str) -> bool:
         return False
     else:
         with db:
-            delete_list = ListWord.delete().where(ListWord.user_id == user_id, \
+            delete_list = ListWord.delete().where(ListWord.user_id == user_id,
                                                   ListWord.name == name).execute()
         print(f"List -> {name} is deleted")
         return True
