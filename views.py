@@ -52,7 +52,7 @@ def login_new_person(name: str, password: str) -> bool:
         print("A user with this name already exists")
         return False
     with db:
-        new_user = User(name=name, password=convert_password(password)).save()
+        User(name=name, password=convert_password(password)).save()
     print(f"Create new user -> {name}")
     return True
 
@@ -89,7 +89,7 @@ def create_list_word(user_id: str, name: str) -> bool:
         return False
     else:
         with db:
-            new_list = ListWord(user_id=user_id, name=name).save()
+            ListWord(user_id=user_id, name=name).save()
         print(f"Create new ListWord -> {name}")
         return True
 
@@ -105,25 +105,42 @@ def delete_list_word(user_id: str, name: str) -> bool:
         return False
     else:
         with db:
-            delete_list = ListWord.delete().where(ListWord.user_id == user_id,
-                                                  ListWord.name == name).execute()
-        print(f"List -> {name} is deleted")
-        return True
+            list_id = convert_list_in_id(user_id, name)
+            ListWord.delete().where(ListWord.user_id == user_id,
+                                    ListWord.name == name).execute()
+
+            Word.delete().where(Word.list_id == list_id).execute()
+            print(f"List -> {name} is deleted")
+            return True
 
 
-def convert_listword_id(user_id: str, name: str) -> str:
+def delete_word(user_id: str, list_id: str, word: str) -> bool:
+    """Delete all words in list which we choice"""
+
+    if checking_word(user_id, list_id, word):
+        with db:
+            Word.delete().where(Word.list_id == list_id, Word.user_id == user_id,
+                                Word.word == word).execute()
+            print(f"The word -> {word} deleted")
+            return True
+    else:
+        print(f"The word -> {word} not find")
+        return False
+
+
+def convert_list_in_id(user_id: str, name: str) -> str:
     """Converting the name of the list to its ID,
      provided that it exists"""
 
     with db:
         record = (ListWord.select().where((ListWord.user_id == user_id)
-                                         & (ListWord.name == name)))
-
+                                          & (ListWord.name == name)))
+        print(str(*[our_record.id for our_record in record]))
         return str(*[our_record.id for our_record in record])
 
 
 def checking_word(user_id: str, list_id: str, word: str) -> bool:
-    """Сhecking the presence of a word in the list"""
+    """Search the presence of a word in the list"""
 
     with db:
         our_word = (Word.select().where((Word.user_id == user_id) &
@@ -145,13 +162,15 @@ def create_word(user_id: str, name_list: str, word: str, translate: str) -> bool
         print("There is no such list")
         return False
 
-    list_id = convert_listword_id(user_id, name_list)
+    list_id = convert_list_in_id(user_id, name_list)
     if checking_word(user_id, list_id, word):
         print("This word is already on the list")
         return False
 
     with db:
-        save_word = Word(user_id=user_id, list_id=list_id, word=word, translate=translate).save()
-    print(f"""Create word -> {word}\ntranslate -> {translate}""")
+        Word(user_id=user_id, list_id=list_id, word=word, translate=translate).save()
+    print(f"""Create word -> {word}\ntranslate -> {translate}\nIn list -> {name_list}""")
     return True
 
+
+delete_list_word('2', 'Фразовые глаголы')
