@@ -45,6 +45,17 @@ def verify_name(username: str) -> bool:
             return False
 
 
+def convert_username_toId(name: str) -> bool or str:
+    """Convertation username in user_id"""
+
+    if verify_name(name) == False:
+        return False
+    with db:
+        user_info = User.select().where(User.name == name)
+        return str(*[user.id for user in user_info])
+
+
+
 def login_new_person(name: str, password: str) -> bool:
     """Create new user"""
 
@@ -171,6 +182,3 @@ def create_word(user_id: str, name_list: str, word: str, translate: str) -> bool
         Word(user_id=user_id, list_id=list_id, word=word, translate=translate).save()
     print(f"""Create word -> {word}\ntranslate -> {translate}\nIn list -> {name_list}""")
     return True
-
-
-delete_list_word('2', 'Фразовые глаголы')

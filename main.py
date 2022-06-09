@@ -1,51 +1,41 @@
-from views import *
-
-class Person:
-    """Create person object for authorization"""
-
-    def __init__(self, name, user_id):
-        self.name = name
-        self.password = user_id
+from actions import main_user
 
 
-def post_name_password() -> tuple:
-    name = input('Write your name: ')
-    password = input('Write your password: ')
-    return name, password
+def main_menu():
+    """Interface for work"""
 
+    user = main_user()
+    if user:
+        print(user.user_id)
+        while True:
 
-def main_user():
-    """Authorization"""
+            choice = input(f'\n\n\nWelcom __{user.name}__\nMake choice:\n'
+                           f'Create new list: --> 1\n'
+                           f'Add word: --> 2\n'
+                           f'Delete word --> 3\n'
+                           f'Delete list --> 4\n'
+                           f'Exit --> 0\n# ')
 
-    print('\n\n\n')
-    while True:
-        print('\n')
-        choice = input("Choice action:\nLog in to your account - 1\n"
-                       "Register new account - 2\nExit - 0\n# ")
-        if choice == '1':
-            name, password = post_name_password()
-            userid = verify_name(name)
-            if userid:
-                main_person = Person(name, userid)
-                print(f"The user {name} is logged in")
+            if choice == '1':
+                user.create_list(input("Enter name for your new list: \n"))
+                continue
+            elif choice == '2':
+                name_list, word, translate = user.put_data_add_word()
+                user.add_word(name_list, word, translate)
+                continue
+            elif choice == '3':
+                list_id, word = user.put_data_delete_word()
+                user.delete_word(list_id, word)
+                continue
+            elif choice == '4':
+                user.delete_list(input("Enter name list for delete with all words: \n"))
+                continue
+            elif choice == '0':
+                print("Catch you later!")
                 break
             else:
-                print('There is no such user, try again')
+                print("Make choice: 1, 2, 3, 4 or 0 for Exit")
                 continue
-        elif choice == '2':
-            name, password = post_name_password()
-            if login_new_person(name, password):
-                userid = verify_name(name)
-                main_person = Person(name, userid)
-                print(f'The user {name} is registered')
-                break
-            else:
-                continue
-        elif choice == '0':
-            print("Catch you later!")
-            break
-        else:
-            print("Make choice: 1, 2 or 0 for Exit")
-            continue
 
-main_user()
+
+main_menu()
