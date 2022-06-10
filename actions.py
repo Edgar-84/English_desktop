@@ -24,6 +24,20 @@ class Person:
         """Delete word in ListWord"""
         delete_word(self.user_id, list_id, word)
 
+    def delete_user(self):
+        """Delete user with his lists and words"""
+        pass
+
+    def view_user_lists(self):
+        """View all WordLists from user"""
+        lists_words = view_lists_user(self.user_id)
+        print(f'\n\n\nUser {self.name} have next lists:\n{lists_words}')
+
+
+    def view_words_inlist(self):
+        """View all words in chosen list"""
+        pass
+
     def put_data_add_word(self) -> tuple:
         """Write info for add_word"""
 

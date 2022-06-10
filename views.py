@@ -55,7 +55,6 @@ def convert_username_toId(name: str) -> bool or str:
         return str(*[user.id for user in user_info])
 
 
-
 def login_new_person(name: str, password: str) -> bool:
     """Create new user"""
 
@@ -182,3 +181,38 @@ def create_word(user_id: str, name_list: str, word: str, translate: str) -> bool
         Word(user_id=user_id, list_id=list_id, word=word, translate=translate).save()
     print(f"""Create word -> {word}\ntranslate -> {translate}\nIn list -> {name_list}""")
     return True
+
+
+def view_lists_user(user_id: str) -> list:
+    """View all user lists"""
+
+    if check_user_id(user_id) == False:
+        print("Invalid user_id")
+        return False
+
+    with db:
+        user_lists = ListWord.select().where(ListWord.user_id == user_id)
+        return [our_list.name for our_list in user_lists]
+
+
+def view_words_in_list(user_id: str, list_id: str,
+                       view: bool=True, exams: bool=False,
+                       first: str='en') -> None or dict:
+    """View all words and translates in list"""
+
+    with db:
+        words_translates = Word.select().where(Word.user_id == user_id,
+                                               Word.list_id == list_id)
+
+        if view == True:
+            for word_transl in words_translates:
+                print(word_transl.word, '-' ,word_transl.translate )
+
+        if exams == True:
+            if first == 'en':
+                dictEn_Rus = dict()
+
+                for word_transl in words_translates:
+                    dictEn_Rus[word_transl.word] = word_transl.translate
+                return dictEn_Rus.items()
+

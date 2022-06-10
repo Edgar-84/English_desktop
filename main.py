@@ -14,6 +14,7 @@ def main_menu():
                            f'Add word: --> 2\n'
                            f'Delete word --> 3\n'
                            f'Delete list --> 4\n'
+                           f'View user lists --> 5\n'
                            f'Exit --> 0\n# ')
 
             if choice == '1':
@@ -30,11 +31,14 @@ def main_menu():
             elif choice == '4':
                 user.delete_list(input("Enter name list for delete with all words: \n"))
                 continue
+            elif choice == '5':
+                user.view_user_lists()
+                continue
             elif choice == '0':
                 print("Catch you later!")
                 break
             else:
-                print("Make choice: 1, 2, 3, 4 or 0 for Exit")
+                print("Make choice: 1, 2, 3, 4, 5, 6 or 0 for Exit")
                 continue
 
 
