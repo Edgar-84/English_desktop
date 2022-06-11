@@ -138,15 +138,17 @@ def delete_word(user_id: str, list_id: str, word: str) -> bool:
         return False
 
 
-def convert_list_in_id(user_id: str, name: str) -> str:
+def convert_list_in_id(user_id: str, name: str) -> str or bool:
     """Converting the name of the list to its ID,
      provided that it exists"""
-
-    with db:
-        record = (ListWord.select().where((ListWord.user_id == user_id)
-                                          & (ListWord.name == name)))
-        print(str(*[our_record.id for our_record in record]))
-        return str(*[our_record.id for our_record in record])
+    if check_listwords(user_id, name):
+        with db:
+            record = (ListWord.select().where((ListWord.user_id == user_id)
+                                              & (ListWord.name == name)))
+            return str(*[our_record.id for our_record in record])
+    else:
+        print("You write wrong list")
+        return False
 
 
 def checking_word(user_id: str, list_id: str, word: str) -> bool:
@@ -196,9 +198,11 @@ def view_lists_user(user_id: str) -> list:
 
 
 def view_words_in_list(user_id: str, list_id: str,
-                       view: bool=True, exams: bool=False,
-                       first: str='en') -> None or dict:
-    """View all words and translates in list"""
+                       view: bool = True, exams: bool = False,
+                       first: str = 'en') -> None or dict:
+    """View all words and translates in list.
+        Also, can return words in dict english - russian
+        or russian - english"""
 
     with db:
         words_translates = Word.select().where(Word.user_id == user_id,
@@ -206,13 +210,19 @@ def view_words_in_list(user_id: str, list_id: str,
 
         if view == True:
             for word_transl in words_translates:
-                print(word_transl.word, '-' ,word_transl.translate )
+                print(word_transl.word, '-', word_transl.translate)
 
         if exams == True:
             if first == 'en':
-                dictEn_Rus = dict()
+                dictEn_Ru = dict()
 
                 for word_transl in words_translates:
-                    dictEn_Rus[word_transl.word] = word_transl.translate
-                return dictEn_Rus.items()
+                    dictEn_Ru[word_transl.word] = word_transl.translate
+                return dictEn_Ru.items()
 
+            elif first == 'ru':
+                dictRu_En = dict()
+
+                for word_transl in words_translates:
+                    dictRu_En[word_transl.translate] = word_transl.word
+                return dictRu_En.items()

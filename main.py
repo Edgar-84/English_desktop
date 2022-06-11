@@ -15,10 +15,11 @@ def main_menu():
                            f'Delete word --> 3\n'
                            f'Delete list --> 4\n'
                            f'View user lists --> 5\n'
+                           f'View words in list --> 6\n'
                            f'Exit --> 0\n# ')
 
             if choice == '1':
-                user.create_list(input("Enter name for your new list: \n"))
+                user.create_list(input("Enter name for your new list: \n#"))
                 continue
             elif choice == '2':
                 name_list, word, translate = user.put_data_add_word()
@@ -29,11 +30,13 @@ def main_menu():
                 user.delete_word(list_id, word)
                 continue
             elif choice == '4':
-                user.delete_list(input("Enter name list for delete with all words: \n"))
+                user.delete_list(input("Enter name list for delete with all words: \n#"))
                 continue
             elif choice == '5':
                 user.view_user_lists()
                 continue
+            elif choice == '6':
+                user.view_words_inlist(input("Enter name list: \n#"))
             elif choice == '0':
                 print("Catch you later!")
                 break

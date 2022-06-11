@@ -28,15 +28,33 @@ class Person:
         """Delete user with his lists and words"""
         pass
 
+    def update_word(self):
+        """Change word in list"""
+        pass
+
+    def update_list(self):
+        """Change name list"""
+        pass
+
+    def exams_one(self):
+        """Return random word and translate in list"""
+        pass
+
     def view_user_lists(self):
         """View all WordLists from user"""
         lists_words = view_lists_user(self.user_id)
         print(f'\n\n\nUser {self.name} have next lists:\n{lists_words}')
 
+    def view_words_inlist(self, list_name: str,
+                          view: bool = True, exams: bool = False,
+                          first: str = 'en') -> None or dict:
+        """View all words and translates in list.
+            Also, can return words in dict english - russian
+            or russian - english"""
 
-    def view_words_inlist(self):
-        """View all words in chosen list"""
-        pass
+        list_id = convert_list_in_id(self.user_id, list_name)
+
+        view_words_in_list(self.user_id, list_id, view, exams, first)
 
     def put_data_add_word(self) -> tuple:
         """Write info for add_word"""
@@ -81,6 +99,11 @@ def main_user():
                 continue
         elif choice == '2':
             name, password = post_name_password()
+
+            if len(name) or len(password) < 4:
+                print("Write a password and name longer than 4 characters")
+                continue
+
             if login_new_person(name, password):
                 userid = convert_username_toId(name)
                 main_person = Person(name, userid)
@@ -88,11 +111,10 @@ def main_user():
                 return main_person
             else:
                 continue
+
         elif choice == '0':
             print("Catch you later!")
             return False
         else:
             print("Make choice: 1, 2 or 0 for Exit")
             continue
-
-
