@@ -40,10 +40,11 @@ class Person:
         """Return random word and translate in list"""
         pass
 
-    def view_user_lists(self):
+    def view_user_lists(self) -> list:
         """View all WordLists from user"""
         lists_words = view_lists_user(self.user_id)
         print(f'\n\n\nUser {self.name} have next lists:\n{lists_words}')
+        return lists_words
 
     def view_words_inlist(self, list_name: str,
                           view: bool = True, exams: bool = False,
@@ -59,15 +60,13 @@ class Person:
     def put_data_add_word(self) -> tuple:
         """Write info for add_word"""
 
-        name_list = input("Enter the name of the list to store the word: \n")
         word = input("Enter word: \n")
         translate = input("Enter translate: \n")
-        return name_list, word, translate
+        return word, translate
 
-    def put_data_delete_word(self) -> tuple:
+    def put_data_delete_word(self, name_list: str) -> tuple:
         """Write info for delete word"""
 
-        name_list = input("Enter the name of list with word: \n")
         word = input("Enter the word from delete: \n")
         list_id = convert_list_in_id(self.user_id, name_list)
         return list_id, word
