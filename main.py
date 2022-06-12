@@ -1,12 +1,38 @@
 from actions import main_user
 
+from termcolor import cprint
+
+
+def example_module(person_class: classmethod, name_list: str):
+    """Work with our examples"""
+
+    while True:
+        cprint('\n\n__Examples__', 'red')
+        choice = input(f'Translate English - Russian --> 1\n'
+                       f'Translate Russian - English --> 2\n'
+                       f'Exit --> 0\n# ')
+
+        if choice == '1':
+            person_class.exams_one(name_list, view=False, exams=True)
+            continue
+
+        elif choice == '2':
+            person_class.exams_one(name_list, view=False, exams=True, first='ru')
+            continue
+
+        elif choice == '0':
+            return None
+        else:
+            print("Make choice: 1, 2 or 0 for Exit")
+            continue
+
 
 def work_with_list(person_class: classmethod, name_list: str):
     """Work with chosen list"""
 
     while True:
-        choice = input(f'\n\nThe *{name_list}* list is selected.\n'
-                       f'View words in list --> 1\n'
+        cprint(f'\n\nThe *{name_list}* list is selected.', 'red')
+        choice = input(f'View words in list --> 1\n'
                        f'Add word: --> 2\n'
                        f'Delete word --> 3\n'
                        f'Delete list --> 4\n'
@@ -42,7 +68,7 @@ def work_with_list(person_class: classmethod, name_list: str):
                     print("Make choice: 1 or 2")
 
         elif choice == '5':
-            print('Run Example')
+            example_module(person_class, name_list)
             continue
 
         elif choice == '0':
@@ -96,8 +122,8 @@ def main_menu():
     user = main_user()
     if user:
         while True:
-
-            choice = input(f'\n\n\nWelcome __{user.name}__\nMake choice:\n'
+            cprint(f'\n\n\nWelcome __{user.name}__', 'red')
+            choice = input('Make choice:\n'
                            f'View word lists --> 1\n'
                            f'Exit --> 0\n# ')
 
@@ -112,4 +138,5 @@ def main_menu():
                 continue
 
 
-main_menu()
+if __name__ == '__main__':
+    main_menu()

@@ -214,15 +214,21 @@ def view_words_in_list(user_id: str, list_id: str,
 
         if exams == True:
             if first == 'en':
-                dictEn_Ru = dict()
+                listEn_Ru = []
 
                 for word_transl in words_translates:
-                    dictEn_Ru[word_transl.word] = word_transl.translate
-                return dictEn_Ru.items()
+                    item = list()
+                    item.append(word_transl.word)
+                    item.append(word_transl.translate)
+                    listEn_Ru.append(item)
+                return listEn_Ru
 
             elif first == 'ru':
-                dictRu_En = dict()
+                listRu_En = []
 
                 for word_transl in words_translates:
-                    dictRu_En[word_transl.translate] = word_transl.word
-                return dictRu_En.items()
+                    item = list()
+                    item.append(word_transl.translate)
+                    item.append(word_transl.word)
+                    listRu_En.append(item)
+                return listRu_En

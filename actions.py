@@ -1,4 +1,19 @@
 from views import *
+import random
+
+from termcolor import cprint
+
+def choice_while(text: str, key: str, exit=False):
+    """Wile for choice"""
+    while True:
+        choice = input(text)
+        if choice == key:
+            return True
+        if exit == True:
+            if choice == '0':
+                return False
+        else:
+            continue
 
 
 class Person:
@@ -36,14 +51,26 @@ class Person:
         """Change name list"""
         pass
 
-    def exams_one(self):
+    def exams_one(self, list_name: str,
+                  view: bool = True, exams: bool = False,
+                  first: str = 'en') -> None or dict:
         """Return random word and translate in list"""
-        pass
+
+        list_id = convert_list_in_id(self.user_id, list_name)
+        list_words = view_words_in_list(self.user_id, list_id, view, exams, first)
+        random.shuffle(list_words)
+        for word_translate in list_words:
+            cprint(f'\n\n{word_translate[0]}', 'green')
+            choice_while('\nPress Enter for view translate: \n# ', '')
+            cprint(f'\n\n{word_translate[0]} - {word_translate[1]}', 'blue')
+            if not choice_while('\nPress Enter for continue or 0 for exit: \n# ',
+                                '', exit=True):
+                break
 
     def view_user_lists(self) -> list:
         """View all WordLists from user"""
         lists_words = view_lists_user(self.user_id)
-        print(f'\n\n\nUser {self.name} have next lists:\n{lists_words}')
+        cprint(f'\n\n\nUser {self.name} have next lists:\n{lists_words}', 'yellow')
         return lists_words
 
     def view_words_inlist(self, list_name: str,
@@ -54,14 +81,13 @@ class Person:
             or russian - english"""
 
         list_id = convert_list_in_id(self.user_id, list_name)
-
         view_words_in_list(self.user_id, list_id, view, exams, first)
 
     def put_data_add_word(self) -> tuple:
         """Write info for add_word"""
 
-        word = input("Enter word: \n")
-        translate = input("Enter translate: \n")
+        word = input("Enter word (EN): \n")
+        translate = input("Enter translate (RU): \n")
         return word, translate
 
     def put_data_delete_word(self, name_list: str) -> tuple:
