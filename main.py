@@ -37,6 +37,7 @@ def work_with_list(person_class: classmethod, name_list: str):
                        f'Delete word --> 3\n'
                        f'Delete list --> 4\n'
                        f'Run Example_1 --> 5\n'
+                       f'Download list words from file "word" --> 6\n'
                        f'Exit --> 0\n# ')
 
         if choice == '1':
@@ -69,6 +70,10 @@ def work_with_list(person_class: classmethod, name_list: str):
 
         elif choice == '5':
             example_module(person_class, name_list)
+            continue
+
+        elif choice == '6':
+            person_class.downloads_from_file(name_list)
             continue
 
         elif choice == '0':

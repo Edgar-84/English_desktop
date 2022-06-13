@@ -163,8 +163,10 @@ def checking_word(user_id: str, list_id: str, word: str) -> bool:
         return False
 
 
-def create_word(user_id: str, name_list: str, word: str, translate: str) -> bool:
-    """Create new word and translate in ListWord"""
+def create_word(user_id: str, name_list: str,
+                word: str, translate: str) -> bool:
+    """Create new word and translate in ListWord,
+    also can download word from file"""
 
     if check_user_id(user_id) == False:
         print("Invalid user_id")
@@ -175,14 +177,15 @@ def create_word(user_id: str, name_list: str, word: str, translate: str) -> bool
         return False
 
     list_id = convert_list_in_id(user_id, name_list)
+
     if checking_word(user_id, list_id, word):
         print("This word is already on the list")
         return False
 
     with db:
         Word(user_id=user_id, list_id=list_id, word=word, translate=translate).save()
-    print(f"""Create word -> {word}\ntranslate -> {translate}\nIn list -> {name_list}""")
-    return True
+        print(f"""Create word -> {word}\ntranslate -> {translate}\nIn list -> {name_list}""")
+        return True
 
 
 def view_lists_user(user_id: str) -> list:
@@ -232,3 +235,15 @@ def view_words_in_list(user_id: str, list_id: str,
                     item.append(word_transl.word)
                     listRu_En.append(item)
                 return listRu_En
+
+
+def downloads_words_from_file(list_words: list) -> bool:
+    """Download word from file 'word'  """
+    try:
+        with db:
+            Word.insert(list_words).execute()
+        print(f"""Create word -> {list_words}""")
+        return True
+    except Exception as e:
+        print("Download BD! Your file with words is wrong")
+        return False

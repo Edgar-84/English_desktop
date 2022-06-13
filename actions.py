@@ -1,15 +1,40 @@
 from views import *
 import random
 
+import openpyxl
 from termcolor import cprint
 
-def choice_while(text: str, key: str, exit=False):
+
+def convertor_word_file(user_id: str, list_id: str) -> bool or list:
+    """This converter take words and translates in file 'words'
+        and put in user list"""
+
+    book = openpyxl.open("converter/words.xlsx", read_only=True)
+    sheet = book.active
+
+    try:
+        list_words = []
+        for row in range(1, sheet.max_row + 1):
+            info = {
+                'user_id': user_id,
+                'list_id': list_id,
+                'word': sheet[row][0].value,
+                'translate': sheet[row][1].value}
+            list_words.append(info)
+
+        return list_words
+    except Exception as e:
+        print("Your file with words is wrong")
+        return False
+
+
+def choice_while(text: str, key: str, go_back=False):
     """Wile for choice"""
     while True:
         choice = input(text)
         if choice == key:
             return True
-        if exit == True:
+        if go_back == True:
             if choice == '0':
                 return False
         else:
@@ -51,6 +76,17 @@ class Person:
         """Change name list"""
         pass
 
+    def downloads_from_file(self, name_list: str):
+        """Download word from file 'word' """
+        list_id = convert_list_in_id(self.user_id, name_list)
+        list_words = convertor_word_file(self.user_id, list_id)
+
+        if not list_words:
+            return False
+        else:
+            downloads_words_from_file(list_words)
+
+
     def exams_one(self, list_name: str,
                   view: bool = True, exams: bool = False,
                   first: str = 'en') -> None or dict:
@@ -64,7 +100,7 @@ class Person:
             choice_while('\nPress Enter for view translate: \n# ', '')
             cprint(f'\n\n{word_translate[0]} - {word_translate[1]}', 'blue')
             if not choice_while('\nPress Enter for continue or 0 for exit: \n# ',
-                                '', exit=True):
+                                '', go_back=True):
                 break
 
     def view_user_lists(self) -> list:
