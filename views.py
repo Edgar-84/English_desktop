@@ -244,6 +244,7 @@ def downloads_words_from_file(list_words: list) -> bool:
             Word.insert(list_words).execute()
         print(f"""Create word -> {list_words}""")
         return True
+
     except Exception as e:
         print("Download BD! Your file with words is wrong")
         return False
