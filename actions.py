@@ -97,7 +97,7 @@ class Person:
         for word_translate in list_words:
             cprint(f'\n\n{word_translate[0]}', 'green')
             choice_while('\nPress Enter for view translate: \n# ', '')
-            cprint(f'\n\n{word_translate[0]} - {word_translate[1]}', 'red')
+            cprint(f'\n\n{word_translate[0]} - {word_translate[1]}', 'blue')
             if not choice_while('\nPress Enter for continue or 0 for exit: \n# ',
                                 '', go_back=True):
                 break
